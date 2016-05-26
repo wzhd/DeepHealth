@@ -34,8 +34,8 @@ length = 25600
 length_root = 160
 
 
-f_class = open('os_year_01_label_1097.txt', 'rb') # opens the csv file
-f_data = open('breast_cancer_CNV_f.csv', 'rb')
+f_class = open('os_year_01_label_1097.txt', 'r') # opens the csv file
+f_data = open('breast_cancer_CNV_f.csv', 'r')
 variable_len = 0;
 try:
     c_class = csv.reader(f_class)  # creates the reader object
