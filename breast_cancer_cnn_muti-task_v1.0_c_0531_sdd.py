@@ -5,8 +5,8 @@ from __future__ import division
 from __future__ import print_function
 
 import tensorflow as tf
-import csv
 import numpy
+np = numpy
 import random
 from sklearn.metrics import roc_curve, auc
 import matplotlib.pyplot as plt
@@ -34,18 +34,12 @@ length = 25600
 length_root = 160
 
 
-f_class = open('os_year_01_label_1097.txt', 'r') # opens the csv file
-f_data = open('breast_cancer_CNV_f.csv', 'r')
+f_class = 'os_year_01_label_1097.txt' # opens the csv file
+f_data = 'breast_cancer_CNV_f.csv'
 variable_len = 0;
 try:
-    c_class = csv.reader(f_class)  # creates the reader object
-    x=list(c_class)
-    d_class =numpy.array(x).astype('float')
-    #print(d_class)
-    c_matrix = csv.reader(f_data)
-
-    x=list(c_matrix)
-    d_matrix = numpy.array(x).astype('float')
+    d_class = np.loadtxt(f_class, dtype=float)
+    d_matrix = np.loadtxt(f_data, delimiter=',', dtype=float)
 
     
     #add zeros
@@ -59,8 +53,7 @@ try:
    
 
 finally:
-    f_class.close()      # closing
-    f_data.close()
+    pass
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
