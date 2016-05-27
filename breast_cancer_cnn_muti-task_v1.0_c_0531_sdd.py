@@ -63,7 +63,7 @@ flags.DEFINE_integer('max_steps', 10000, 'Number of steps to run trainer.')
 flags.DEFINE_float('learning_rate', 0.0001, 'Initial learning rate.')
 
 
-def main(_):
+def create_variables():
     x_input = tf.placeholder(tf.float32, [None, variable_len], name='x-input')
 
     x = x_input
@@ -132,7 +132,9 @@ def main(_):
 
     # Merge all the summaries and write them out to /tmp/mnist_logs
     merged = tf.merge_all_summaries()
+    return x_input, y_, keep_prob, train_step, merged, accuracy, y
 
+def main(_):
     # Train the model, and feed in test data and record summaries every 10 steps
     cls = [];
     a = 0;
@@ -158,14 +160,7 @@ def main(_):
         #d_class[train_indc],
         d_matrix[test_indc], 
         cls[test_indc],
-        #d_class[test_indc],
-        x_input,
-        y_,
-        keep_prob,
-        train_step,
-        merged,
-        accuracy,
-        y)
+        )
 
     class_origin = numpy.zeros([cls.shape[0]])
     for i in range(cls.shape[0]):
@@ -206,15 +201,10 @@ def train_steps(
   train_class, 
   test_data, 
   test_class, 
-  x_input, 
-  y_, 
-  keep_prob,
-  train_step,
-  merged,
-  accuracy,
-  y):
+  ):
 
-  
+    x_input, y_, keep_prob, train_step, merged, accuracy, y = create_variables()
+
     sess = tf.InteractiveSession()
 
     tf.initialize_all_variables().run()
