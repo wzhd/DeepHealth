@@ -218,7 +218,7 @@ def train_steps(
     sess = tf.InteractiveSession()
 
     tf.initialize_all_variables().run()
-    train_indc = range(train_data.shape[0])
+    train_indc = list(range(train_data.shape[0]))
     batch_size = int((train_data.shape[0])/1000)
   
     
