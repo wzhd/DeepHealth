@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 """A very simple CNN classifier, modified to display data in TensorBoard."""
 ## Author: Sun Dongdong
 from __future__ import absolute_import
