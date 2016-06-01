@@ -5,8 +5,8 @@ from __future__ import division
 from __future__ import print_function
 
 import tensorflow as tf
-import csv
 import numpy
+np = numpy
 import random
 from sklearn.metrics import roc_curve, auc
 import matplotlib.pyplot as plt
@@ -34,18 +34,12 @@ length = 25600
 length_root = 160
 
 
-f_class = open('os_year_01_label_1097.txt', 'rb') # opens the csv file
-f_data = open('breast_cancer_CNV_f.csv', 'rb')
+f_class = 'os_year_01_label_1097.txt' # opens the csv file
+f_data = 'breast_cancer_CNV_f.csv'
 variable_len = 0;
 try:
-    c_class = csv.reader(f_class)  # creates the reader object
-    x=list(c_class)
-    d_class =numpy.array(x).astype('float')
-    #print(d_class)
-    c_matrix = csv.reader(f_data)
-
-    x=list(c_matrix)
-    d_matrix = numpy.array(x).astype('float')
+    d_class = np.loadtxt(f_class, dtype=float)
+    d_matrix = np.loadtxt(f_data, delimiter=',', dtype=float)
 
     
     #add zeros
@@ -59,8 +53,7 @@ try:
    
 
 finally:
-    f_class.close()      # closing
-    f_data.close()
+    pass
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
@@ -70,7 +63,7 @@ flags.DEFINE_integer('max_steps', 10000, 'Number of steps to run trainer.')
 flags.DEFINE_float('learning_rate', 0.0001, 'Initial learning rate.')
 
 
-def main(_):
+def create_variables():
     x_input = tf.placeholder(tf.float32, [None, variable_len], name='x-input')
 
     x = x_input
@@ -139,7 +132,9 @@ def main(_):
 
     # Merge all the summaries and write them out to /tmp/mnist_logs
     merged = tf.merge_all_summaries()
+    return x_input, y_, keep_prob, train_step, merged, accuracy, y
 
+def main(_):
     # Train the model, and feed in test data and record summaries every 10 steps
     cls = [];
     a = 0;
@@ -165,14 +160,7 @@ def main(_):
         #d_class[train_indc],
         d_matrix[test_indc], 
         cls[test_indc],
-        #d_class[test_indc],
-        x_input,
-        y_,
-        keep_prob,
-        train_step,
-        merged,
-        accuracy,
-        y)
+        )
 
     class_origin = numpy.zeros([cls.shape[0]])
     for i in range(cls.shape[0]):
@@ -213,19 +201,14 @@ def train_steps(
   train_class, 
   test_data, 
   test_class, 
-  x_input, 
-  y_, 
-  keep_prob,
-  train_step,
-  merged,
-  accuracy,
-  y):
+  ):
 
-  
+    x_input, y_, keep_prob, train_step, merged, accuracy, y = create_variables()
+
     sess = tf.InteractiveSession()
 
     tf.initialize_all_variables().run()
-    train_indc = range(train_data.shape[0])
+    train_indc = list(range(train_data.shape[0]))
     batch_size = int((train_data.shape[0])/1000)
   
     
