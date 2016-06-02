@@ -5,6 +5,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from multiprocessing import Pool
+
 import tensorflow as tf
 import numpy
 np = numpy
@@ -155,16 +157,13 @@ def main(_):
     ## the following code implemets a 10-fold cross-validation tensorflow
     kf = KFold(d_matrix.shape[0], n_folds=10)
     class_predict = numpy.zeros([d_matrix.shape[0]])
-    i = 0
-    for train_indc, test_indc in kf:
-        i += 1
-        print('K fold: %s' % (i))
-        class_predict[test_indc] = train_steps(d_matrix[train_indc], 
-        cls[train_indc], 
-        #d_class[train_indc],
-        d_matrix[test_indc], 
-        cls[test_indc],
-        )
+    args = ([d_matrix[train_indc], cls[train_indc], d_matrix[test_indc], cls[test_indc]]
+            for train_indc, test_indc in kf)
+
+    pool = Pool(5)
+    return_values = pool.map (train_steps, args)
+    for (_, test_indc), rv in zip (kf, return_values):
+        class_predict [test_indc] = rv
 
     class_origin = numpy.zeros([cls.shape[0]])
     for i in range(cls.shape[0]):
@@ -200,13 +199,8 @@ def save_score(class_origin,class_predict):
         fiw2.write(str(i)+'\n')
     fiw2.close()
 
-def train_steps(
-  train_data, 
-  train_class, 
-  test_data, 
-  test_class, 
-  ):
-
+def train_steps(args):
+    train_data, train_class, test_data, test_class = args
     x_input, y_, keep_prob, train_step, merged, accuracy, y = create_variables()
 
     sess = tf.InteractiveSession()
