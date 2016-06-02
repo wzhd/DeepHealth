@@ -10,6 +10,8 @@ import numpy
 np = numpy
 import random
 from sklearn.metrics import roc_curve, auc
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
